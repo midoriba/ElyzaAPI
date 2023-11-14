@@ -49,7 +49,9 @@ def hello():
         )
     output = tokenizer.decode(output_ids.tolist()[0][token_ids.size(1) :], skip_special_tokens=True)
     print(f'output: {output}')
-    return jsonify({"response":output})
+    response = jsonify({"response":output})
+    response.headers.add('Content-Type', 'application/json; charset=utf-8')
+    return response
 
 if __name__ == "__main__":
     app.run(debug=True, host=HOST, port=PORT)

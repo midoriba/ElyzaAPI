@@ -11,7 +11,9 @@ app = Flask(__name__)
 
 @app.route('/', methods=['POST'])
 def hello():
-    return jsonify({"response":"開通済み"})
+    response = jsonify({"response":"開通済み"})
+    response.headers.add('Content-Type', 'application/json; charset=utf-8')
+    return response
 
 if __name__ == "__main__":
     app.run(debug=True, host=HOST, port=PORT)
