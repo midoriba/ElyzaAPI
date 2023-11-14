@@ -2,6 +2,7 @@ from flask import Flask, request
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
+PORT = 54325
 
 B_INST, E_INST = "[INST]", "[/INST]"
 B_SYS, E_SYS = "<<SYS>>\n", "\n<</SYS>>\n\n"
@@ -49,4 +50,4 @@ def hello():
     return {"response":output}
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=PORT)
