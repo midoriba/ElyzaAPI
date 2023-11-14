@@ -1,6 +1,10 @@
 from flask import Flask, request
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
+from logging import getLogger
+
+log = getLogger(__name__)
+log.info('起動')
 
 PORT = 54325
 
@@ -24,14 +28,14 @@ def generate_prompt(text):
 if torch.cuda.is_available():
     model = model.to("cuda")
 
-print("モデル準備完了")    
+log.info("モデル準備完了")
 
 app = Flask(__name__)
 
 @app.route('/', methods=['POST'])
 def hello():
     text = request.form.get('text', None)
-    print(f"input: {text}")
+    log.info(f"input: {text}")
     if request.method != 'POST' or not text:
         return {"error":"リクエストが不正です。"}
     else:
@@ -47,6 +51,7 @@ def hello():
             eos_token_id=tokenizer.eos_token_id,
         )
     output = tokenizer.decode(output_ids.tolist()[0][token_ids.size(1) :], skip_special_tokens=True)
+    log.info(f'output: {output}')
     return {"response":output}
 
 if __name__ == "__main__":
