@@ -1,12 +1,9 @@
 from flask import Flask, request, jsonify
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from logging import getLogger
-
-log = getLogger(__name__)
-log.info('起動')
 
 PORT = 54325
+HOST = '0.0.0.0'
 
 B_INST, E_INST = "[INST]", "[/INST]"
 B_SYS, E_SYS = "<<SYS>>\n", "\n<</SYS>>\n\n"
@@ -28,14 +25,14 @@ def generate_prompt(text):
 if torch.cuda.is_available():
     model = model.to("cuda")
 
-log.info("モデル準備完了")
+print("モデル準備完了")
 
 app = Flask(__name__)
 
 @app.route('/', methods=['POST'])
 def hello():
     text = request.form.get('text', None)
-    log.info(f"input: {text}")
+    print(f"input: {text}")
     if request.method != 'POST' or not text:
         return {"error":"リクエストが不正です。"}
     else:
@@ -51,8 +48,8 @@ def hello():
             eos_token_id=tokenizer.eos_token_id,
         )
     output = tokenizer.decode(output_ids.tolist()[0][token_ids.size(1) :], skip_special_tokens=True)
-    log.info(f'output: {output}')
+    print(f'output: {output}')
     return jsonify({"response":output})
 
 if __name__ == "__main__":
-    app.run(debug=True, port=PORT)
+    app.run(debug=True, host=HOST, port=PORT)
