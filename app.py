@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from logging import getLogger
@@ -52,7 +52,7 @@ def hello():
         )
     output = tokenizer.decode(output_ids.tolist()[0][token_ids.size(1) :], skip_special_tokens=True)
     log.info(f'output: {output}')
-    return {"response":output}
+    return jsonify({"response":output})
 
 if __name__ == "__main__":
     app.run(debug=True, port=PORT)
